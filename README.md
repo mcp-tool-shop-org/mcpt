@@ -13,6 +13,16 @@ CLI for discovering and running MCP Tool Shop tools.
 pip install -e .
 ```
 
+## Getting Started
+
+```bash
+mcpt list --refresh        # Fetch registry and see available tools
+mcpt init                  # Create mcp.yaml in current directory
+mcpt add file-compass      # Add a tool to your workspace
+mcpt install file-compass  # Install via pip
+mcpt run file-compass      # Stub run (safe by default)
+```
+
 ## Usage
 
 ### List available tools
@@ -85,7 +95,7 @@ name: "my-mcp-workspace"
 
 registry:
   source: "https://github.com/mcp-tool-shop/mcp-tool-registry"
-  ref: "main"
+  ref: "v0.1.0"
 
 tools:
   - file-compass

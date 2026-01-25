@@ -364,6 +364,8 @@ def doctor() -> None:
     status = get_registry_status()
     console.print(f"  [dim]Source:[/dim] {status.source}")
     console.print(f"  [dim]Ref:[/dim] {status.ref}")
+    if status.ref == "main":
+        console.print("  [yellow]Tip:[/yellow] Pin to a tagged release (e.g., v0.1.0) for reproducibility.")
     console.print(f"  [dim]Cache:[/dim] {status.cache_path}")
 
     if status.cache_exists:
