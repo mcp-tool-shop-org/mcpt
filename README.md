@@ -7,6 +7,16 @@ CLI for discovering and running MCP Tool Shop tools.
 > The command is `mcpt`, but workspace configs remain `mcp.yaml` for ecosystem
 > compatibility.
 
+## How MCP Tool Shop Fits Together
+
+- **Registry** ([mcp-tool-registry](https://github.com/mcp-tool-shop/mcp-tool-registry)) → what tools exist
+- **CLI** → how you consume them (this repo)
+- **Examples** ([mcp-examples](https://github.com/mcp-tool-shop/mcp-examples)) → how you learn the model
+- **Tags** (v0.1.0, v0.2.0) → stability, reproducibility
+- **main** → development only, not for production
+- **Tools default to least privilege** → no network, no writes, no side effects
+- **Capability is always explicit and opt-in** → you decide when to enable
+
 ## Installation
 
 ```bash
