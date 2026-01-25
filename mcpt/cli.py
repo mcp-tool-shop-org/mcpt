@@ -179,8 +179,14 @@ def init(
         typer.Argument(help="Directory to initialize (default: current directory)"),
     ] = None,
     force: Annotated[bool, typer.Option("--force", "-f", help="Overwrite existing mcp.yaml")] = False,
+    registry_ref: Annotated[
+        Optional[str],
+        typer.Option("--registry-ref", help="Registry git ref (default: v0.1.0)"),
+    ] = None,
 ) -> None:
     """Initialize a new MCP workspace with mcp.yaml."""
+    from mcpt.registry.client import DEFAULT_REF
+
     if path is None:
         path = Path.cwd()
 
@@ -191,7 +197,7 @@ def init(
         raise typer.Exit(1)
 
     path.mkdir(parents=True, exist_ok=True)
-    write_default(config_path)
+    write_default(config_path, registry_ref=registry_ref or DEFAULT_REF)
     console.print(f"[green]Created[/green] {config_path}")
 
 

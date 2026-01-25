@@ -12,9 +12,9 @@ from typing import Any
 import httpx
 from platformdirs import user_cache_dir
 
-# Update this to your actual org/repo when deploying
+# Registry defaults - pin to stable release for new workspaces
 DEFAULT_REGISTRY_SOURCE = "https://github.com/mcp-tool-shop/mcp-tool-registry"
-DEFAULT_REF = "main"
+DEFAULT_REF = "v0.1.0"
 
 
 def github_raw_registry_url(source: str, ref: str) -> str:
