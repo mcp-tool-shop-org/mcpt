@@ -1,0 +1,11 @@
+schema_version: "0.1"
+name: "my-mcp-workspace"
+
+registry:
+  source: "https://github.com/mcp-tool-shop/mcp-tool-registry"
+  ref: "v0.1.0"
+
+tools: []
+
+run:
+  safe_by_default: true
