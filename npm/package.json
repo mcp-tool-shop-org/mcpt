@@ -1,0 +1,37 @@
+{
+  "name": "@mcp-tool-shop/mcpt",
+  "version": "0.2.0",
+  "description": "npm wrapper for mcpt - CLI for discovering and running MCP Tool Shop tools",
+  "bin": {
+    "mcpt": "./bin/mcpt.js"
+  },
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
+  "keywords": [
+    "mcp",
+    "cli",
+    "tools",
+    "registry",
+    "discovery",
+    "package-manager",
+    "python",
+    "wrapper"
+  ],
+  "author": "mcp-tool-shop <64996768+mcp-tool-shop@users.noreply.github.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcp-tool-shop/mcpt.git",
+    "directory": "npm"
+  },
+  "homepage": "https://github.com/mcp-tool-shop/mcpt#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ]
+}
