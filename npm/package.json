@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-tool-shop/mcpt",
+  "name": "@mcptoolshop/mcpt",
   "version": "0.2.0",
   "description": "npm wrapper for mcpt - CLI for discovering and running MCP Tool Shop tools",
   "bin": {
@@ -33,5 +33,9 @@
     "win32",
     "darwin",
     "linux"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }
