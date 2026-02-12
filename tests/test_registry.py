@@ -106,51 +106,33 @@ class TestRegistryOperations:
         results = search_tools("")
         assert isinstance(results, list)
 
-    @patch("mcpt.registry.client.get_registry")
-    def test_get_registry_status_returns_dict(self, mock_get_registry):
-        """Test get_registry_status returns status info."""
-        mock_get_registry.return_value = {"tools": []}
+    def test_get_registry_status_returns_status(self):
+        """Test get_registry_status returns RegistryStatus."""
+        from mcpt.registry.client import RegistryStatus
         status = get_registry_status()
-        assert isinstance(status, dict)
+        assert isinstance(status, RegistryStatus)
 
 
 class TestCaching:
     """Test registry caching functionality."""
 
-    @patch("mcpt.registry.client.CACHE_FILE")
-    def test_load_cached_registry_nonexistent(self, mock_cache_file):
+    def test_load_cached_registry_nonexistent(self, tmp_path):
         """Test load_cached_registry with nonexistent cache."""
-        mock_cache_file.exists.return_value = False
-        result = load_cached_registry()
-        assert result is None
+        cfg = RegistryConfig(source="https://example.com", ref="test-nonexistent")
+        with patch("mcpt.registry.client.registry_cache_path") as mock_path:
+            mock_path.return_value = tmp_path / "nonexistent" / "registry.json"
+            result = load_cached_registry(cfg)
+            assert result is None
 
-    @patch("mcpt.registry.client.CACHE_FILE")
-    def test_save_cached_registry(self, mock_cache_file, tmp_path):
-        """Test save_cached_registry writes to file."""
-        cache_file = tmp_path / "cache.json"
-        mock_cache_file.__str__.return_value = str(cache_file)
-        mock_cache_file.parent.mkdir.return_value = None
-        test_data = {"tools": [{"id": "test"}]}
-        
-        # Just verify function doesn't crash
-        try:
-            save_cached_registry(test_data)
-        except:
-            pass  # Mock may not support full file operations
-
-    @patch("mcpt.registry.client.CACHE_FILE")
-    def test_load_cached_registry_valid(self, mock_cache_file, tmp_path):
-        """Test load_cached_registry with valid cache."""
-        cache_file = tmp_path / "cache.json"
-        test_data = {"tools": [{"id": "test"}]}
-        
-        # Write test data
+    def test_save_and_load_cached_registry(self, tmp_path):
+        """Test save_cached_registry writes and load reads back."""
         import json
-        cache_file.write_text(json.dumps(test_data))
-        
-        # Mock the cache file path
-        mock_cache_file.exists.return_value = True
-        mock_cache_file.read_text.return_value = json.dumps(test_data)
-        
-        loaded = load_cached_registry()
-        assert loaded == test_data
+        cfg = RegistryConfig(source="https://example.com", ref="test-save")
+        cache_file = tmp_path / "registry.json"
+        test_data = {"tools": [{"id": "test"}]}
+
+        with patch("mcpt.registry.client.registry_cache_path") as mock_path:
+            mock_path.return_value = cache_file
+            save_cached_registry(cfg, test_data)
+            loaded = load_cached_registry(cfg)
+            assert loaded == test_data

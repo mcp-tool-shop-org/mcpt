@@ -127,13 +127,23 @@ class TestStubRun:
             "args": [],
             "safe_run": True,
         }
-        
+
         stub_run("file-compass", plan)
-        
-        # Verify stub mode is mentioned (in Panel or table output)
-        calls = [str(call) for call in mock_print.call_args_list]
-        all_output = " ".join(calls)
-        assert "STUB" in all_output or "stub" in all_output
+
+        # Verify stub mode is mentioned (in Panel renderable or --real hint)
+        found = False
+        for call in mock_print.call_args_list:
+            for arg in call.args:
+                text = str(arg)
+                if "STUB" in text or "stub" in text or "--real" in text:
+                    found = True
+                    break
+                # Check if it's a Rich Panel with renderable text
+                if hasattr(arg, 'renderable'):
+                    if "STUB" in str(arg.renderable) or "stub" in str(arg.renderable):
+                        found = True
+                        break
+        assert found
 
     @patch("mcpt.runner.stub.console.print")
     def test_stub_run_with_args(self, mock_print):

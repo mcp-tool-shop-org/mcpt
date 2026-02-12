@@ -1,10 +1,17 @@
 """Smoke tests for MCPT CLI."""
 
+import re
+
 from typer.testing import CliRunner
 
 from mcpt.cli import app
 
 runner = CliRunner()
+
+
+def strip_ansi(text: str) -> str:
+    """Remove ANSI escape sequences from text."""
+    return re.sub(r'\x1b\[[0-9;]*m', '', text)
 
 
 def test_version():
@@ -34,33 +41,34 @@ def test_list_help():
     """Test list command help."""
     result = runner.invoke(app, ["list", "--help"])
     assert result.exit_code == 0
-    assert "--json" in result.stdout
-    assert "--refresh" in result.stdout
+    out = strip_ansi(result.stdout)
+    assert "--json" in out
+    assert "--refresh" in out
 
 
 def test_info_help():
     """Test info command help."""
     result = runner.invoke(app, ["info", "--help"])
     assert result.exit_code == 0
-    assert "TOOL_ID" in result.stdout
+    assert "TOOL_ID" in strip_ansi(result.stdout)
 
 
 def test_search_help():
     """Test search command help."""
     result = runner.invoke(app, ["search", "--help"])
     assert result.exit_code == 0
-    assert "QUERY" in result.stdout
+    assert "QUERY" in strip_ansi(result.stdout)
 
 
 def test_init_help():
     """Test init command help."""
     result = runner.invoke(app, ["init", "--help"])
     assert result.exit_code == 0
-    assert "--force" in result.stdout
+    assert "--force" in strip_ansi(result.stdout)
 
 
 def test_run_help():
     """Test run command help."""
     result = runner.invoke(app, ["run", "--help"])
     assert result.exit_code == 0
-    assert "--real" in result.stdout
+    assert "--real" in strip_ansi(result.stdout)
