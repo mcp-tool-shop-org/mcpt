@@ -1,5 +1,6 @@
 """Comprehensive tests for MCPT CLI commands and functionality."""
 
+import re
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -9,6 +10,11 @@ from typer.testing import CliRunner
 from mcpt.cli import app, fuzzy_match_tools
 
 runner = CliRunner()
+
+
+def strip_ansi(text: str) -> str:
+    """Remove ANSI escape sequences from text."""
+    return re.sub(r'\x1b\[[0-9;]*m', '', text)
 
 
 # =============================================================================
@@ -59,8 +65,9 @@ class TestCommandHelp:
         """Test list command help."""
         result = runner.invoke(app, ["list", "--help"])
         assert result.exit_code == 0
-        assert "--json" in result.stdout
-        assert "--refresh" in result.stdout
+        out = strip_ansi(result.stdout)
+        assert "--json" in out
+        assert "--refresh" in out
 
     def test_info_help(self):
         """Test info command help."""
