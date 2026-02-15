@@ -1,6 +1,6 @@
 {
   "name": "@mcptoolshop/mcpt",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "npm wrapper for mcpt - CLI for discovering and running MCP Tool Shop tools",
   "bin": {
     "mcpt": "./bin/mcpt.js"
