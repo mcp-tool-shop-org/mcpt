@@ -1,0 +1,20 @@
+{
+  "tools": [
+    {
+      "id": "tool-a",
+      "name": "Tool A",
+      "description": "The first tool."
+    },
+    {
+      "id": "tool-b",
+      "name": "Tool B",
+      "description": "The second tool.",
+      "deprecated": true
+    },
+    {
+      "id": "tool-c",
+      "name": "Tool C",
+      "description": "The third tool."
+    }
+  ]
+}

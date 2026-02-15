@@ -14,7 +14,7 @@ from platformdirs import user_cache_dir
 
 # Registry defaults - pin to stable release for new workspaces
 DEFAULT_REGISTRY_SOURCE = "https://github.com/mcp-tool-shop-org/mcp-tool-registry"
-DEFAULT_REF = "v0.1.0"
+DEFAULT_REF = "v0.3.0"
 
 
 def github_raw_registry_url(source: str, ref: str) -> str:
@@ -85,7 +85,39 @@ def fetch_registry(cfg: RegistryConfig) -> dict[str, Any]:
     url = github_raw_registry_url(cfg.source, cfg.ref)
     r = httpx.get(url, timeout=20.0)
     r.raise_for_status()
-    return r.json()
+    data = r.json()
+
+    # Fetch additional artifacts (best effort)
+    try:
+        # registry.json is at .../ref/registry.json
+        # artifacts are at .../ref/dist/...
+        base_url = url.rsplit("/", 1)[0]
+
+        # Cache directory: .../registry/ref/dist/
+        cache_base = registry_cache_path(cfg).parent / "dist"
+        cache_base.mkdir(parents=True, exist_ok=True)
+
+        artifacts = [
+            "registry.index.json",
+            "capabilities.json",
+            "featured.json",
+            "registry.report.json",
+            "registry.llms.txt",
+        ]
+
+        for art in artifacts:
+            try:
+                resp = httpx.get(f"{base_url}/dist/{art}", timeout=10.0)
+                if resp.status_code == 200:
+                    (cache_base / art).write_bytes(resp.content)
+            except Exception:
+                pass
+
+    except Exception:
+        # Ensure we return the main registry even if artifact fetching fails
+        pass
+
+    return data
 
 
 class RegistryFetchError(Exception):
@@ -138,26 +170,137 @@ def get_tool(tool_id: str, cfg: RegistryConfig | None = None) -> dict[str, Any] 
     return None
 
 
+def load_cached_artifact(cfg: RegistryConfig, filename: str) -> Any | None:
+    """Load a cached artifact (JSON or text) if available."""
+    p = registry_cache_path(cfg).parent / "dist" / filename
+    if not p.exists():
+        return None
+    try:
+        content = p.read_text(encoding="utf-8")
+        if filename.endswith(".json"):
+            return json.loads(content)
+        return content
+    except Exception:
+        return None
+
+
+def get_bundle_membership(cfg: RegistryConfig | None = None) -> dict[str, list[str]]:
+    """Return a mapping of tool_id -> list[bundle_names] for all tools."""
+    if cfg is None:
+        cfg = RegistryConfig()
+    try:
+        index = load_cached_artifact(cfg, "registry.index.json")
+        if not index or "bundles" not in index:
+            return {}
+        
+        # Invert: tool_id -> bundles
+        mapping: dict[str, list[str]] = {}
+        for bundle_name, tools in index["bundles"].items():
+            for tool_id in tools:
+                if tool_id not in mapping:
+                    mapping[tool_id] = []
+                mapping[tool_id].append(bundle_name)
+        return mapping
+    except Exception:
+        return {}
+
+
+def calculate_match_score(tool: dict[str, Any], query_lower: str) -> tuple[int, list[str]]:
+    """Calculate match score and reasons for a tool."""
+    score = 0
+    reasons = []
+    
+    tid = tool.get("id", "").lower()
+    name = tool.get("name", "").lower()
+    desc = tool.get("description", "").lower()
+    tags = [t.lower() for t in tool.get("tags", [])]
+
+    # 1. Exact ID match (100)
+    if tid == query_lower:
+        score += 100
+        reasons.append("exact id match")
+    
+    # 2. Exact keyword match in name (80)
+    if query_lower == name:
+        score += 80
+        reasons.append("exact name match")
+
+    # 3. Exact tag match (60)
+    if query_lower in tags:
+        score += 60
+        reasons.append(f"exact tag match: {query_lower}")
+
+    # 4. ID Prefix match (40)
+    if tid.startswith(query_lower):
+        score += 40
+        reasons.append("id prefix match")
+
+    # 5. Name/Desc substring (20)
+    if query_lower in name:
+        score += 20
+        reasons.append("name substring match")
+    if query_lower in desc:
+        score += 10
+        reasons.append("description substring match")
+        
+    # 6. Tag substring (5 per tag)
+    for tag in tags:
+        if query_lower in tag:
+            score += 5
+            reasons.append(f"tag substring match: {tag}")
+            
+    return score, reasons
+
+
 def search_tools(
     query: str,
     cfg: RegistryConfig | None = None,
+    bundle: str | None = None,
+    tag: str | None = None,
 ) -> list[dict[str, Any]]:
-    """Search tools by name, description, or tags."""
+    """Search tools with ranking and filtering.
+    
+    Returns tools with injected '_score' and '_reasons' fields.
+    """
     registry = get_registry(cfg)
-    query_lower = query.lower()
+    query_lower = query.lower() if query else ""
     results = []
 
+    # Try to load index for better bundle/tag data, but fallback to registry.json
+    index = load_cached_artifact(cfg or RegistryConfig(), "registry.index.json")
+    
+    # If bundle filter requested, and we have index with bundles
+    allowed_ids = None
+    if bundle and index and "bundles" in index:
+        allowed_ids = set(index["bundles"].get(bundle, []))
+    
     for tool in registry.get("tools", []):
-        # Search in id, name, description, and tags
-        if query_lower in tool.get("id", "").lower():
-            results.append(tool)
-        elif query_lower in tool.get("name", "").lower():
-            results.append(tool)
-        elif query_lower in tool.get("description", "").lower():
-            results.append(tool)
-        elif any(query_lower in tag.lower() for tag in tool.get("tags", [])):
-            results.append(tool)
+        # Filter by bundle
+        if allowed_ids is not None and tool.get("id") not in allowed_ids:
+            continue
+            
+        # Filter by tag
+        if tag and tag.lower() not in [t.lower() for t in tool.get("tags", [])]:
+            continue
 
+        if not query:
+            # If no query but filters matched, add with zero score
+            tool_copy = tool.copy()
+            tool_copy["_score"] = 0
+            tool_copy["_reasons"] = ["filter match"]
+            results.append(tool_copy)
+            continue
+
+        score, reasons = calculate_match_score(tool, query_lower)
+        if score > 0:
+            tool_copy = tool.copy()
+            tool_copy["_score"] = score
+            tool_copy["_reasons"] = reasons
+            results.append(tool_copy)
+
+    # Sort by score descending, then ID ascending
+    results.sort(key=lambda x: (-x.get("_score", 0), x.get("id", "")))
+    
     return results
 
 

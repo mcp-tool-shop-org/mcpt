@@ -11,6 +11,22 @@ from mcpt.cli import app, fuzzy_match_tools
 runner = CliRunner()
 
 
+class TestIconsCommand:
+    """Test icons command."""
+
+    def test_icons_basic(self):
+        """Test icons command runs successfully."""
+        result = runner.invoke(app, ["icons"])
+        assert result.exit_code == 0
+        assert "Trust Tiers" in result.stdout
+        assert "Risk Markers" in result.stdout
+
+    def test_icons_plain(self):
+        """Test icons command with plain flag."""
+        result = runner.invoke(app, ["icons", "--plain"])
+        assert result.exit_code == 0
+        assert "Trust Tiers" in result.stdout
+
 class TestFuzzyMatchTools:
     """Test fuzzy_match_tools function."""
 
@@ -194,16 +210,20 @@ class TestInitCommand:
 class TestAddCommand:
     """Test add command."""
 
-    def test_add_tool_to_workspace(self):
+    @patch("mcpt.cli.get_tool")
+    def test_add_tool_to_workspace(self, mock_get_tool):
         """Test add command adds tool to mcp.yaml."""
+        mock_get_tool.return_value = {"id": "file-compass"}
         with runner.isolated_filesystem():
             runner.invoke(app, ["init"])
             result = runner.invoke(app, ["add", "file-compass"])
             assert result.exit_code == 0
             assert Path("mcp.yaml").exists()
 
-    def test_add_duplicate_tool(self):
+    @patch("mcpt.cli.get_tool")
+    def test_add_duplicate_tool(self, mock_get_tool):
         """Test add command with duplicate tool."""
+        mock_get_tool.return_value = {"id": "file-compass"}
         with runner.isolated_filesystem():
             runner.invoke(app, ["init"])
             runner.invoke(app, ["add", "file-compass"])
@@ -213,8 +233,10 @@ class TestAddCommand:
 
 
 class TestRemoveCommand:
-    """Test remove command."""
-
+    @patch("mcpt.cli.get_tool")
+    def test_remove_tool_from_workspace(self, mock_get_tool):
+        """Test remove command removes tool from mcp.yaml."""
+        mock_get_tool.return_value = {"id": "file-compass"}
     def test_remove_tool_from_workspace(self):
         """Test remove command removes tool from mcp.yaml."""
         with runner.isolated_filesystem():

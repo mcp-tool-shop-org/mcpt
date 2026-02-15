@@ -11,7 +11,10 @@ from .client import (
     load_cached_registry,
     save_cached_registry,
     search_tools,
+    load_cached_artifact,
+    get_bundle_membership,
 )
+from .featured import get_featured, FeaturedData, Section, Collection
 
 __all__ = [
     "RegistryConfig",
@@ -24,4 +27,7 @@ __all__ = [
     "load_cached_registry",
     "save_cached_registry",
     "search_tools",
+    "load_cached_artifact",
+    "get_bundle_membership",
+    "get_featured",
 ]

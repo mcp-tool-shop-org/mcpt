@@ -7,15 +7,26 @@ CLI for discovering and running MCP Tool Shop tools.
 > The command is `mcpt`, but workspace configs remain `mcp.yaml` for ecosystem
 > compatibility.
 
-## How MCP Tool Shop Fits Together
+## Ecosystem & Backing Registry
 
-- **Registry** ([mcp-tool-registry](https://github.com/mcp-tool-shop-org/mcp-tool-registry)) → what tools exist
-- **CLI** → how you consume them (this repo)
-- **Examples** ([mcp-examples](https://github.com/mcp-tool-shop-org/mcp-examples)) → how you learn the model
-- **Tags** (v0.1.0, v0.2.0) → stability, reproducibility
-- **main** → development only; may change without notice; builds may break
-- **Tools default to least privilege** → no network, no writes, no side effects
-- **Capability is always explicit and opt-in** → you decide when to enable
+`mcpt` is the official client for the **[mcp-tool-registry](https://github.com/mcp-tool-shop-org/mcp-tool-registry)**, the source of truth for the ecosystem.
+
+- **[Public Explorer](https://mcp-tool-shop-org.github.io/mcp-tool-registry/)**: Browse available tools on the web.
+- **[Registry Contract](https://github.com/mcp-tool-shop-org/mcp-tool-registry/blob/main/docs/contract.md)**: Understanding stability and metadata guarantees.
+- **[Submit a Tool](https://github.com/mcp-tool-shop-org/mcp-tool-registry/issues/new/choose)**: Contribute to the ecosystem.
+
+## Core Philosophy
+
+- **Canonical Files**: We trust the `registry.index.json` artifact as the single source of truth.
+- **Rules-Generated Bundles**: Trust tiers are derived from objective rules (Core, Ops, Agents, Evaluation), not manual curation.
+- **Least Privilege**: Tools default to zero capability; access is always **opt-in**.
+
+## Registry Compatibility
+
+`mcpt` follows the MCP Tool Registry **v1.x** contract.
+
+- **Supported Artifacts**: `registry.index.json` (v1 schema)
+- **Pinning**: Use `mcpt init --registry-ref <git-tag>` to pin to a stable registry version (e.g., `v1.0.0`).
 
 ## Installation
 

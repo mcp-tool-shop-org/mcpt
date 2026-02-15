@@ -1,0 +1,17 @@
+{
+  "featured": ["tool-a", "tool-b"],
+  "collections": [
+    {
+      "id": "starter",
+      "name": "Starter Pack",
+      "description": "Essential tools.",
+      "tools": ["tool-a"]
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced Pack",
+      "description": "For pros.",
+      "tools": ["tool-b", "tool-c"]
+    }
+  ]
+}
