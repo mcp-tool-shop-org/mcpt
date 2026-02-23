@@ -6,6 +6,7 @@
 
 **CLI for discovering, installing, and running MCP Tool Shop tools.**
 
+[![CI](https://github.com/mcp-tool-shop-org/mcpt/actions/workflows/ci.yml/badge.svg)](https://github.com/mcp-tool-shop-org/mcpt/actions/workflows/ci.yml)
 [![PyPI version](https://img.shields.io/pypi/v/mcp-select)](https://pypi.org/project/mcp-select/)
 [![npm version](https://img.shields.io/npm/v/@mcptoolshop/mcpt)](https://www.npmjs.com/package/@mcptoolshop/mcpt)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
