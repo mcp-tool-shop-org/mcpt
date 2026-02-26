@@ -1,15 +1,18 @@
-<p align="center"><img src="logo.png" alt="mcpt logo" width="200"></p>
+<p align="center">
+  <a href="README.ja.md">日本語</a> | <a href="README.zh.md">中文</a> | <a href="README.es.md">Español</a> | <a href="README.fr.md">Français</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.pt-BR.md">Português (BR)</a>
+</p>
 
-# mcpt
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mcp-tool-shop-org/mcpt/main/assets/logo-mcpt.png" alt="mcpt" width="400">
+</p>
 
-> Part of [MCP Tool Shop](https://mcptoolshop.com)
-
-**CLI for discovering, installing, and running MCP Tool Shop tools.**
-
-[![CI](https://github.com/mcp-tool-shop-org/mcpt/actions/workflows/ci.yml/badge.svg)](https://github.com/mcp-tool-shop-org/mcpt/actions/workflows/ci.yml)
-[![PyPI version](https://img.shields.io/pypi/v/mcp-select)](https://pypi.org/project/mcp-select/)
-[![npm version](https://img.shields.io/npm/v/@mcptoolshop/mcpt)](https://www.npmjs.com/package/@mcptoolshop/mcpt)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://github.com/mcp-tool-shop-org/mcpt/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/mcpt/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://pypi.org/project/mcp-select/"><img src="https://img.shields.io/pypi/v/mcp-select" alt="PyPI"></a>
+  <a href="https://www.npmjs.com/package/@mcptoolshop/mcpt"><img src="https://img.shields.io/npm/v/@mcptoolshop/mcpt" alt="npm"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow" alt="MIT License"></a>
+  <a href="https://mcp-tool-shop-org.github.io/mcpt/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page"></a>
+</p>
 
 ---
 

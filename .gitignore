@@ -11,3 +11,7 @@ build/
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+site/.astro/
+site/node_modules/
+site/dist/
+node_modules/
