@@ -140,6 +140,31 @@ pip install -e ".[dev]"
 pytest
 ```
 
+## Security & Data Scope
+
+| Aspect | Detail |
+|--------|--------|
+| **Data touched** | Registry metadata (fetched from GitHub). Local workspace config (`mcp.yaml`). Tool install artifacts in platform cache |
+| **Data NOT touched** | No telemetry. No analytics. No credentials stored. No user data collected |
+| **Permissions** | Read: registry metadata. Write: local cache directory, workspace `mcp.yaml` |
+| **Network** | HTTPS to GitHub for registry metadata. Optional tool installation from npm/PyPI |
+| **Telemetry** | None collected or sent |
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting.
+
+## Scorecard
+
+| Category | Score |
+|----------|-------|
+| A. Security | 10 |
+| B. Error Handling | 10 |
+| C. Operator Docs | 10 |
+| D. Shipping Hygiene | 10 |
+| E. Identity (soft) | 10 |
+| **Overall** | **50/50** |
+
+> Full audit: [SHIP_GATE.md](SHIP_GATE.md) · [SCORECARD.md](SCORECARD.md)
+
 ## License
 
 [MIT](LICENSE)

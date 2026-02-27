@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.6] - 2026-02-27
+
+### Changed
+- Added SHIP_GATE.md, SCORECARD.md for product standards compliance
+- Added Security & Data Scope section to README
+- Updated SECURITY.md with full fields
+- Updated Development Status classifier to Production/Stable
+
 ## [1.1.0] - 2026-02-18
 
 ### Added
